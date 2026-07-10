@@ -1,0 +1,38 @@
+{
+  "name": "skill-boundary-audit",
+  "version": "0.1.0",
+  "description": "Audit agent skill markdown for side effects, approvals, inputs, tools, and missing safety boundaries.",
+  "type": "module",
+  "bin": {
+    "skill-boundary-audit": "./bin/skill-boundary-audit.js"
+  },
+  "exports": {
+    ".": "./src/index.js"
+  },
+  "scripts": {
+    "test": "node --test",
+    "check": "node scripts/check-package.js",
+    "build": "node scripts/build.js",
+    "smoke": "node bin/skill-boundary-audit.js fixtures/skill-risky.md --format markdown --fail-on high"
+  },
+  "keywords": [
+    "agent",
+    "skill",
+    "audit",
+    "approval",
+    "safety"
+  ],
+  "license": "MIT",
+  "engines": {
+    "node": ">=20"
+  },
+  "files": [
+    "bin",
+    "docs",
+    "fixtures",
+    "scripts",
+    "src",
+    "SKILL.md",
+    "README.md"
+  ]
+}
