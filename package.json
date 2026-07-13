@@ -35,5 +35,9 @@
     "src",
     "SKILL.md",
     "README.md"
-  ]
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rogerchappel/skill-boundary-audit.git"
+  }
 }
