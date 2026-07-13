@@ -14,7 +14,8 @@
     "check": "node scripts/check-package.js",
     "build": "node scripts/build.js",
     "smoke": "node bin/skill-boundary-audit.js fixtures/skill-risky.md --format markdown --fail-on high",
-    "validate": "bash scripts/validate.sh"
+    "validate": "bash scripts/validate.sh",
+    "package:smoke": "npm pack --dry-run"
   },
   "keywords": [
     "agent",
