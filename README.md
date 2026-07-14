@@ -32,3 +32,20 @@ The CLI reads only explicit file paths. It does not execute skills, call network
 ## Limitations
 
 Findings are heuristic. Treat the report as review support, not a formal security verdict.
+
+## Development
+
+Use the checked-in package scripts as the public smoke surface:
+
+```sh
+git clone https://github.com/rogerchappel/skill-boundary-audit.git
+cd skill-boundary-audit
+npm install
+npm run check
+npm run test
+npm run smoke
+npm run build
+npm run package:smoke
+```
+
+The CI workflow runs the same commands so local verification matches the pull-request gate.
