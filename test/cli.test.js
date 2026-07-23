@@ -23,3 +23,19 @@ test("CLI exits zero for safe fixture under high threshold", () => {
   assert.equal(result.status, 0);
   assert.match(result.stdout, /Findings:/);
 });
+
+test("CLI fail-on high distinguishes prohibitions from affirmative actions", () => {
+  const prohibited = spawnSync(
+    process.execPath,
+    ["bin/skill-boundary-audit.js", "fixtures/skill-prohibitive.md", "--fail-on", "high"],
+    { encoding: "utf8" }
+  );
+  const affirmative = spawnSync(
+    process.execPath,
+    ["bin/skill-boundary-audit.js", "fixtures/skill-affirmative-risk.md", "--fail-on", "high"],
+    { encoding: "utf8" }
+  );
+
+  assert.equal(prohibited.status, 0);
+  assert.equal(affirmative.status, 1);
+});
