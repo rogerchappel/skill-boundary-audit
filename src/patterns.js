@@ -30,7 +30,7 @@ export const FINDING_PATTERNS = [
     id: "credential-language",
     severity: "high",
     label: "Credential or secret language",
-    regex: /\b(secret|token|api key|credential|password|oauth)\b/i
+    regex: /\b(secrets?|tokens?|api keys?|credentials?|passwords?|oauth)\b/i
   },
   {
     id: "local-write",

@@ -1,5 +1,5 @@
 import { FINDING_PATTERNS, KNOWN_TOOL_WORDS, SECTION_ALIASES, TOOL_PATTERN } from "./patterns.js";
-import { findLines, getHeadings, hasSection } from "./markdown.js";
+import { findLines, getHeadings, getMarkdownLines, hasSection } from "./markdown.js";
 
 const SEVERITY_SCORE = { low: 1, medium: 2, high: 3 };
 
@@ -37,7 +37,9 @@ export function auditMany(inputs) {
 
 function detectPatternFindings(markdown) {
   return FINDING_PATTERNS.flatMap((pattern) =>
-    findLines(markdown, pattern.regex).map((match) => ({
+    findLines(markdown, pattern.regex)
+      .filter((match) => !isExplicitProhibition(match.line))
+      .map((match) => ({
       id: pattern.id,
       severity: pattern.severity,
       title: pattern.label,
@@ -59,11 +61,20 @@ function detectMissingSectionFindings(missingSections) {
 
 function detectTools(markdown) {
   const candidates = new Set();
-  for (const match of markdown.matchAll(TOOL_PATTERN)) {
-    const word = match[1];
-    if (KNOWN_TOOL_WORDS.has(word)) candidates.add(word);
+  for (const { line, inFence } of getMarkdownLines(markdown)) {
+    if (inFence) continue;
+    for (const match of line.matchAll(TOOL_PATTERN)) {
+      const word = match[1];
+      if (KNOWN_TOOL_WORDS.has(word)) candidates.add(word);
+    }
   }
   return [...candidates].sort();
+}
+
+function isExplicitProhibition(line) {
+  const prohibition = /\b(?:never|do not|don't|must not|must never|should not|cannot|can't|may not)\b/i;
+  const affirmativeContinuation = /(?:[.;]|\b(?:but|however|instead)\b).*\b(?:send|post|publish|delete|merge|deploy|approve|purchase|email|message|write|update|secret|token|credential|password|oauth)\b/i;
+  return prohibition.test(line) && !affirmativeContinuation.test(line);
 }
 
 function summarize(findings) {
