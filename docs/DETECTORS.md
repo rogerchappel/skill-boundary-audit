@@ -19,4 +19,7 @@ High severity means a human should inspect the skill before use. Medium severity
 
 Fenced code examples are excluded from section, tool, and finding detection. Explicit
 prohibitions such as “Never publish secrets or send credentials” are treated as safety
-boundaries rather than instructions, while affirmative action language remains reportable.
+boundaries rather than instructions. A conjunction (`and`, `but`, `however`, `instead`,
+or `then`) or punctuation starts a new clause, so later affirmative action language on
+the same source line remains reportable. Repeat the prohibition in each clause when the
+boundary should apply to multiple actions.
