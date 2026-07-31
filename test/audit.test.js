@@ -52,6 +52,27 @@ test("explicit safety prohibitions do not become high action findings", async ()
   assert.equal(hasSeverityAtLeast(audit, "high"), false);
 });
 
+test("affirmative clauses after prohibitions remain reportable", async () => {
+  const markdown = await readFile("fixtures/skill-mixed-prohibition.md", "utf8");
+  const audit = auditSkillMarkdown(markdown, { source: "mixed-prohibition" });
+  const externalActions = audit.findings.filter(({ id }) => id === "external-action");
+
+  assert.deepEqual(
+    externalActions.map(({ line }) => line),
+    [5, 6, 7]
+  );
+  assert.deepEqual(
+    externalActions.map(({ excerpt }) => excerpt),
+    [
+      "Do not publish packages and deploy the docs.",
+      "Never send Slack messages, then publish the report.",
+      "Do not delete the source; update the generated index."
+    ]
+  );
+  assert.equal(audit.summary.high, 3);
+  assert.equal(hasSeverityAtLeast(audit, "high"), true);
+});
+
 test("affirmative risky wording still produces high findings and line evidence", async () => {
   const markdown = await readFile("fixtures/skill-affirmative-risk.md", "utf8");
   const audit = auditSkillMarkdown(markdown, { source: "affirmative" });
