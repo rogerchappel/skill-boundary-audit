@@ -52,6 +52,18 @@ test("explicit safety prohibitions do not become high action findings", async ()
   assert.equal(hasSeverityAtLeast(audit, "high"), false);
 });
 
+test("leading prohibitions cover coordinated action lists", async () => {
+  const markdown = await readFile("fixtures/skill-coordinated-prohibition.md", "utf8");
+  const audit = auditSkillMarkdown(markdown, { source: "coordinated-prohibition" });
+
+  assert.deepEqual(
+    audit.findings.filter(({ id }) => id === "external-action"),
+    []
+  );
+  assert.equal(audit.summary.high, 0);
+  assert.equal(hasSeverityAtLeast(audit, "high"), false);
+});
+
 test("affirmative clauses after prohibitions remain reportable", async () => {
   const markdown = await readFile("fixtures/skill-mixed-prohibition.md", "utf8");
   const audit = auditSkillMarkdown(markdown, { source: "mixed-prohibition" });
@@ -59,17 +71,16 @@ test("affirmative clauses after prohibitions remain reportable", async () => {
 
   assert.deepEqual(
     externalActions.map(({ line }) => line),
-    [5, 6, 7]
+    [6, 7]
   );
   assert.deepEqual(
     externalActions.map(({ excerpt }) => excerpt),
     [
-      "Do not publish packages and deploy the docs.",
       "Never send Slack messages, then publish the report.",
       "Do not delete the source; update the generated index."
     ]
   );
-  assert.equal(audit.summary.high, 3);
+  assert.equal(audit.summary.high, 2);
   assert.equal(hasSeverityAtLeast(audit, "high"), true);
 });
 
