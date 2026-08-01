@@ -33,6 +33,11 @@ The CLI reads only explicit file paths. It does not execute skills, call network
 
 Findings are heuristic. Treat the report as review support, not a formal security verdict.
 
+Action detection treats a leading prohibition as applying across a coordinated verb list
+separated by commas, `and`, or `or` (for example, “Never send, post, or publish”).
+Contrast and sequence boundaries such as `but`, `however`, `instead`, `then`, or sentence
+punctuation start a new clause, so affirmative actions after those boundaries are still reported.
+
 ## Development
 
 Use the checked-in package scripts as the public smoke surface:
