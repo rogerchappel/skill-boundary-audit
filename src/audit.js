@@ -3,7 +3,7 @@ import { findLines, getHeadings, getMarkdownLines, hasSection } from "./markdown
 
 const SEVERITY_SCORE = { low: 1, medium: 2, high: 3 };
 const PROHIBITION = /\b(?:never|do not|don't|must not|must never|should not|cannot|can't|may not)\b/i;
-const CLAUSE_BOUNDARY = /(?:[.,;:!?]+|\b(?:and|but|however|instead|then)\b)/i;
+const CLAUSE_BOUNDARY = /(?:[.;:!?]+|\b(?:but|however|instead|then)\b)/i;
 
 export function auditSkillMarkdown(markdown, options = {}) {
   const source = options.source ?? "inline";
