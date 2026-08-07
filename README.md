@@ -28,10 +28,14 @@ const audit = auditSkillMarkdown(markdown, { source: "SKILL.md" });
 ## Safety Notes
 
 The CLI reads only explicit file paths. It does not execute skills, call network services, mutate repositories, or approve actions.
+Unknown options are rejected with exit status 2 before any input files are read.
 
 ## Limitations
 
 Findings are heuristic. Treat the report as review support, not a formal security verdict.
+
+External-action and local-write detection recognizes common verb inflections while using
+whole-word matches to avoid treating unrelated words as actions.
 
 Action detection treats a leading prohibition as applying across a coordinated verb list
 separated by commas, `and`, or `or` (for example, “Never send, post, or publish”).
