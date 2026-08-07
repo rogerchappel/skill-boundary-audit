@@ -2,7 +2,13 @@
 import { readFile } from "node:fs/promises";
 import { auditMany, formatJson, formatMarkdown, hasSeverityAtLeast } from "../src/index.js";
 
-const args = parseArgs(process.argv.slice(2));
+let args;
+try {
+  args = parseArgs(process.argv.slice(2));
+} catch (error) {
+  process.stderr.write(`skill-boundary-audit: ${error.message}\n`);
+  process.exit(2);
+}
 
 if (args.help || args.paths.length === 0) {
   printHelp();
@@ -31,6 +37,7 @@ function parseArgs(argv) {
     else if (arg.startsWith("--format=")) parsed.format = readChoice(arg.slice(9), ["markdown", "json"], "--format");
     else if (arg === "--fail-on") parsed.failOn = readChoice(argv[++index], ["medium", "high"], "--fail-on");
     else if (arg.startsWith("--fail-on=")) parsed.failOn = readChoice(arg.slice(10), ["medium", "high"], "--fail-on");
+    else if (arg.startsWith("-")) throw new Error(`unknown option: ${arg}`);
     else parsed.paths.push(arg);
   }
   return parsed;

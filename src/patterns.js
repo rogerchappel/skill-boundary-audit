@@ -12,7 +12,7 @@ export const FINDING_PATTERNS = [
     id: "external-action",
     severity: "high",
     label: "External action language",
-    regex: /\b(send|post|publish|delete|merge|deploy|approve|purchase|email|message|write to|update)\b/i
+    regex: /\b(?:send(?:s|ing)?|sent|post(?:s|ed|ing)?|publish(?:es|ed|ing)?|delet(?:e|es|ed|ing)|merg(?:e|es|ed|ing)|deploy(?:s|ed|ing)?|approv(?:e|es|ed|ing)|purchas(?:e|es|ed|ing)|email(?:s|ed|ing)?|messag(?:e|es|ed|ing)|(?:write|writes|wrote|written|writing) to|updat(?:e|es|ed|ing))\b/i
   },
   {
     id: "network-access",
@@ -36,7 +36,7 @@ export const FINDING_PATTERNS = [
     id: "local-write",
     severity: "medium",
     label: "Local write or mutation language",
-    regex: /\b(write|edit|modify|patch|create file|delete file|commit|push)\b/i
+    regex: /\b(?:write|writes|wrote|written|writing|edit(?:s|ed|ing)?|modif(?:y|ies|ied|ying)|patch(?:es|ed|ing)?|creat(?:e|es|ed|ing) files?|delet(?:e|es|ed|ing) files?|commit(?:s|ted|ting)?|push(?:es|ed|ing)?)\b/i
   }
 ];
 
