@@ -62,3 +62,27 @@ test("CLI fail-on high accepts coordinated prohibitions and rejects later affirm
     [6, 7]
   );
 });
+
+test("CLI rejects unknown options before file access", () => {
+  const result = spawnSync(
+    process.execPath,
+    ["bin/skill-boundary-audit.js", "missing.md", "--bogus"],
+    { encoding: "utf8" }
+  );
+
+  assert.equal(result.status, 2);
+  assert.equal(result.stdout, "");
+  assert.equal(result.stderr, "skill-boundary-audit: unknown option: --bogus\n");
+  assert.doesNotMatch(result.stderr, /ENOENT|node:fs|at async/);
+});
+
+test("CLI fail-on high catches inflected external actions", () => {
+  const result = spawnSync(
+    process.execPath,
+    ["bin/skill-boundary-audit.js", "fixtures/skill-inflected-risk.md", "--format", "json", "--fail-on", "high"],
+    { encoding: "utf8" }
+  );
+
+  assert.equal(result.status, 1);
+  assert.ok(JSON.parse(result.stdout).audits[0].findings.some(({ id }) => id === "external-action"));
+});
