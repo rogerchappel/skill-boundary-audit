@@ -2,14 +2,16 @@
 
 ## High Severity
 
-- external action language: publish, send, delete, merge, deploy, approve, message, update
+- external action language: send, post, publish, delete, merge, deploy, approve, purchase,
+  email, message, write to, and update
 - credential language: secret, token, API key, credential, password, OAuth (singular or plural)
 - missing safety section
 
 ## Medium Severity
 
 - network or remote-service language
-- local write or mutation language
+- local write or mutation language: write, edit, modify, patch, create file, delete file,
+  commit, and push
 - approval language
 - missing validation, examples, inputs, tools, or approvals sections
 
@@ -23,3 +25,7 @@ prohibition is treated as applying across a coordinated action list separated by
 words (`but`, `however`, `instead`, and `then`) and sentence punctuation start a new
 clause. Affirmative action language after one of those boundaries remains reportable;
 repeat the prohibition after the boundary when it should apply to that clause too.
+
+External-action and local-write verbs recognize their common English inflections (for
+example, `publishes`, `published`, and `publishing`). Matching uses whole words and
+explicit verb forms so unrelated words that merely contain a verb stem are not findings.
