@@ -95,6 +95,43 @@ test("affirmative risky wording still produces high findings and line evidence",
   assert.equal(hasSeverityAtLeast(audit, "high"), true);
 });
 
+test("action detectors recognize common inflections without matching unrelated words", () => {
+  const external = auditSkillMarkdown([
+    "The agent sends emails, posted updates, publishes reports, deleted records,",
+    "merged branches, deploying releases, approves purchases, emailed users,",
+    "messaged owners, wrote to GitHub, and updates issues."
+  ].join("\n"));
+  const local = auditSkillMarkdown([
+    "The tool writes files, edited settings, modifies metadata, patched sources,",
+    "created files, deletes files, committed changes, and pushes branches."
+  ].join("\n"));
+  const unrelated = auditSkillMarkdown("The postage writer describes current documentation.");
+
+  assert.deepEqual(
+    external.findings.filter(({ id }) => id === "external-action").map(({ line }) => line),
+    [1, 2, 3]
+  );
+  assert.deepEqual(
+    local.findings.filter(({ id }) => id === "local-write").map(({ line }) => line),
+    [1, 2]
+  );
+  assert.equal(unrelated.findings.some(({ id }) => id === "external-action" || id === "local-write"), false);
+});
+
+test("inflected actions remain suppressed in prohibitions and fenced examples", () => {
+  const audit = auditSkillMarkdown([
+    "Never sends emails, posts updates, publishes reports, deletes records, or merges branches.",
+    "Do not deploy releases, approve purchases, email users, message owners, write to GitHub, or update issues.",
+    "Do not write files, edit settings, modify metadata, patch sources, or create files.",
+    "Never delete files, commit changes, or push branches.",
+    "```md",
+    "The agent published reports and created files.",
+    "```"
+  ].join("\n"));
+
+  assert.equal(audit.findings.some(({ id }) => id === "external-action" || id === "local-write"), false);
+});
+
 test("formatters preserve source line numbers after fenced examples", async () => {
   const markdown = [
     "# Skill", "", "```md", "Publish a token.", "```", "",
