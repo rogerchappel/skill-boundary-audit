@@ -40,7 +40,7 @@ export function auditMany(inputs) {
 function detectPatternFindings(markdown) {
   return FINDING_PATTERNS.flatMap((pattern) =>
     findLines(markdown, pattern.regex)
-      .filter((match) => !isExplicitProhibition(match.line, pattern.regex))
+      .filter((match) => !pattern.suppressWhenProhibited || !isExplicitProhibition(match.line, pattern.regex))
       .map((match) => ({
       id: pattern.id,
       severity: pattern.severity,

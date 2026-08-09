@@ -44,12 +44,13 @@ test("fenced examples do not provide sections, tools, or action findings", async
   assert.deepEqual(audit.headings, [{ depth: 1, title: "Fenced Example", line: 1 }]);
 });
 
-test("explicit safety prohibitions do not become high action findings", async () => {
+test("explicit safety prohibitions suppress actions but retain credential evidence", async () => {
   const markdown = await readFile("fixtures/skill-prohibitive.md", "utf8");
   const audit = auditSkillMarkdown(markdown, { source: "prohibitive" });
 
-  assert.equal(audit.summary.high, 0);
-  assert.equal(hasSeverityAtLeast(audit, "high"), false);
+  assert.equal(audit.findings.some(({ id }) => id === "external-action"), false);
+  assert.equal(audit.findings.some(({ id }) => id === "credential-language"), true);
+  assert.equal(hasSeverityAtLeast(audit, "high"), true);
 });
 
 test("leading prohibitions cover coordinated action lists", async () => {
@@ -130,6 +131,34 @@ test("inflected actions remain suppressed in prohibitions and fenced examples", 
   ].join("\n"));
 
   assert.equal(audit.findings.some(({ id }) => id === "external-action" || id === "local-write"), false);
+});
+
+test("action prohibitions do not suppress independent evidence categories", () => {
+  const audit = auditSkillMarkdown([
+    "# Skill", "",
+    "## Safety",
+    "Do not publish using a token or remote API without approval.",
+    "Never write files containing credentials or send them to GitHub without permission."
+  ].join("\n"));
+
+  assert.deepEqual(
+    audit.findings.filter(({ id }) => id === "external-action").map(({ line }) => line),
+    []
+  );
+  assert.deepEqual(
+    audit.findings.filter(({ id }) => id === "local-write").map(({ line }) => line),
+    []
+  );
+  for (const id of ["credential-language", "network-access", "approval-language"]) {
+    assert.deepEqual(
+      audit.findings.filter((finding) => finding.id === id).map(({ line }) => line),
+      [4, 5]
+    );
+  }
+  assert.equal(
+    audit.findings.find(({ id, line }) => id === "credential-language" && line === 4).excerpt,
+    "Do not publish using a token or remote API without approval."
+  );
 });
 
 test("formatters preserve source line numbers after fenced examples", async () => {
