@@ -25,6 +25,9 @@ prohibition is treated as applying across a coordinated action list separated by
 words (`but`, `however`, `instead`, and `then`) and sentence punctuation start a new
 clause. Affirmative action language after one of those boundaries remains reportable;
 repeat the prohibition after the boundary when it should apply to that clause too.
+Prohibition suppression applies only to external-action and local-write findings. Other
+evidence on the same line, including credential, network, and approval language, remains
+reportable with its original line evidence.
 
 External-action and local-write verbs recognize their common English inflections (for
 example, `publishes`, `published`, and `publishing`). Matching uses whole words and
