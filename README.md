@@ -28,7 +28,7 @@ const audit = auditSkillMarkdown(markdown, { source: "SKILL.md" });
 ## Safety Notes
 
 The CLI reads only explicit file paths. It does not execute skills, call network services, mutate repositories, or approve actions.
-Unknown options are rejected with exit status 2 before any input files are read.
+Unknown options and inputs that cannot be read as files are reported on stderr and exit with status 2 before any audit output is written. A matched `--fail-on` threshold exits with status 1.
 
 ## Limitations
 
