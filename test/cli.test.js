@@ -80,6 +80,50 @@ test("CLI rejects unknown options before file access", () => {
   assert.doesNotMatch(result.stderr, /ENOENT|node:fs|at async/);
 });
 
+test("CLI reports a missing input without a stack trace", () => {
+  const result = spawnSync(
+    process.execPath,
+    ["bin/skill-boundary-audit.js", "fixtures/definitely-missing.md"],
+    { encoding: "utf8" }
+  );
+
+  assert.equal(result.status, 2);
+  assert.equal(result.stdout, "");
+  assert.equal(
+    result.stderr,
+    "skill-boundary-audit: cannot read input: fixtures/definitely-missing.md\n"
+  );
+  assert.doesNotMatch(result.stderr, /ENOENT|node:fs|at async/);
+});
+
+test("CLI emits no partial audit when a later input cannot be read", () => {
+  const result = spawnSync(
+    process.execPath,
+    ["bin/skill-boundary-audit.js", "fixtures/skill-safe.md", "fixtures/definitely-missing.md"],
+    { encoding: "utf8" }
+  );
+
+  assert.equal(result.status, 2);
+  assert.equal(result.stdout, "");
+  assert.equal(
+    result.stderr,
+    "skill-boundary-audit: cannot read input: fixtures/definitely-missing.md\n"
+  );
+});
+
+test("CLI reports a directory input as unreadable", () => {
+  const result = spawnSync(
+    process.execPath,
+    ["bin/skill-boundary-audit.js", "fixtures"],
+    { encoding: "utf8" }
+  );
+
+  assert.equal(result.status, 2);
+  assert.equal(result.stdout, "");
+  assert.equal(result.stderr, "skill-boundary-audit: cannot read input: fixtures\n");
+  assert.doesNotMatch(result.stderr, /EISDIR|node:fs|at async/);
+});
+
 test("CLI fail-on high catches inflected external actions", () => {
   const result = spawnSync(
     process.execPath,
