@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-import { readFile } from "node:fs/promises";
+import { readFile, stat } from "node:fs/promises";
 import { auditMany, formatJson, formatMarkdown, hasSeverityAtLeast } from "../src/index.js";
 
 let args;
@@ -17,7 +17,14 @@ if (args.help || args.paths.length === 0) {
 
 const inputs = [];
 for (const path of args.paths) {
-  inputs.push({ source: path, markdown: await readFile(path, "utf8") });
+  try {
+    const metadata = await stat(path);
+    if (!metadata.isFile()) throw new Error("not a file");
+    inputs.push({ source: path, markdown: await readFile(path, "utf8") });
+  } catch {
+    process.stderr.write(`skill-boundary-audit: cannot read input: ${path}\n`);
+    process.exit(2);
+  }
 }
 
 const result = auditMany(inputs);
