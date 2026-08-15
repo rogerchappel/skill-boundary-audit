@@ -74,10 +74,16 @@ function detectTools(markdown) {
 }
 
 function isExplicitProhibition(line, findingPattern) {
-  if (!PROHIBITION.test(line)) return false;
-
   const clauses = line.split(CLAUSE_BOUNDARY);
-  return !clauses.some((clause) => findingPattern.test(clause) && !PROHIBITION.test(clause));
+  return !clauses.some((clause) => {
+    const action = findingPattern.exec(clause);
+    if (!action) return false;
+
+    const prohibition = PROHIBITION.exec(clause);
+    const hasLeadingProhibition = prohibition && prohibition.index < action.index;
+    const hasLeadingNo = /\bno\s*$/i.test(clause.slice(0, action.index));
+    return !hasLeadingProhibition && !hasLeadingNo;
+  });
 }
 
 function summarize(findings) {

@@ -2,7 +2,7 @@ export function getHeadings(markdown) {
   return getMarkdownLines(markdown)
     .filter(({ inFence }) => !inFence)
     .map(({ line, number }) => {
-      const match = /^(#{1,6})\s+(.+?)\s*$/.exec(line);
+      const match = /^ {0,3}(#{1,6})\s+(.+?)\s*$/.exec(line);
       if (!match) return null;
       return {
         depth: match[1].length,
