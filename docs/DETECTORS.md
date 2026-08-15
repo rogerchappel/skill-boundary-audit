@@ -21,7 +21,9 @@ High severity means a human should inspect the skill before use. Medium severity
 
 Fenced code examples are excluded from section, tool, and finding detection. A leading
 prohibition is treated as applying across a coordinated action list separated by commas,
-`and`, or `or`, such as “Never send, post, or publish content.” Contrast and sequence
+`and`, or `or`, such as “Never send, post, or publish content.” Explicit boundaries such
+as “No writes” are also recognized. A prohibition suppresses only actions that follow it;
+affirmative actions earlier in the same clause remain findings. Contrast and sequence
 words (`but`, `however`, `instead`, and `then`) and sentence punctuation start a new
 clause. Affirmative action language after one of those boundaries remains reportable;
 repeat the prohibition after the boundary when it should apply to that clause too.

@@ -39,6 +39,8 @@ whole-word matches to avoid treating unrelated words as actions.
 
 Action detection treats a leading prohibition as applying across a coordinated verb list
 separated by commas, `and`, or `or` (for example, “Never send, post, or publish”).
+Explicit `no <action>` boundaries such as “No writes” are also recognized. A prohibition
+must precede the action it suppresses, so earlier affirmative actions remain reportable.
 Contrast and sequence boundaries such as `but`, `however`, `instead`, `then`, or sentence
 punctuation start a new clause, so affirmative actions after those boundaries are still reported.
 
