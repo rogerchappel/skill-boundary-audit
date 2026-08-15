@@ -67,6 +67,21 @@ test("CLI fail-on high accepts coordinated prohibitions and rejects later affirm
   );
 });
 
+test("CLI preserves earlier affirmative evidence before a prohibition", () => {
+  const result = spawnSync(
+    process.execPath,
+    ["bin/skill-boundary-audit.js", "fixtures/skill-action-order.md", "--format", "json", "--fail-on", "high"],
+    { encoding: "utf8" }
+  );
+  const audit = JSON.parse(result.stdout).audits[0];
+
+  assert.equal(result.status, 1);
+  assert.deepEqual(
+    audit.findings.filter(({ id }) => id === "external-action").map(({ line }) => line),
+    [13]
+  );
+});
+
 test("CLI rejects unknown options before file access", () => {
   const result = spawnSync(
     process.execPath,

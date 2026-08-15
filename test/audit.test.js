@@ -85,6 +85,45 @@ test("affirmative clauses after prohibitions remain reportable", async () => {
   assert.equal(hasSeverityAtLeast(audit, "high"), true);
 });
 
+test("prohibitions only suppress actions that follow them", () => {
+  const audit = auditSkillMarkdown([
+    "Send email and do not publish it.",
+    "Write the summary, but no writes to disk."
+  ].join("\n"));
+
+  assert.deepEqual(
+    audit.findings.filter(({ id }) => id === "external-action").map(({ line }) => line),
+    [1]
+  );
+  assert.deepEqual(
+    audit.findings.filter(({ id }) => id === "local-write").map(({ line }) => line),
+    [2]
+  );
+});
+
+test("no-action boundaries suppress their coordinated actions", () => {
+  const audit = auditSkillMarkdown("No writes, edits, or pushes are allowed.");
+
+  assert.equal(audit.findings.some(({ id }) => id === "local-write"), false);
+});
+
+test("ATX headings allow up to three leading spaces but not four", () => {
+  const audit = auditSkillMarkdown([
+    " # Safety", "No writes.",
+    "  ## Validation", "Checked manually.",
+    "   ### Examples", "None.",
+    "    ## Inputs"
+  ].join("\n"));
+
+  assert.deepEqual(audit.headings, [
+    { depth: 1, title: "Safety", line: 1 },
+    { depth: 2, title: "Validation", line: 3 },
+    { depth: 3, title: "Examples", line: 5 }
+  ]);
+  assert.deepEqual(audit.sections.present, ["safety", "validation", "examples"]);
+  assert.equal(audit.findings.some(({ id }) => id === "local-write"), false);
+});
+
 test("affirmative risky wording still produces high findings and line evidence", async () => {
   const markdown = await readFile("fixtures/skill-affirmative-risk.md", "utf8");
   const audit = auditSkillMarkdown(markdown, { source: "affirmative" });
