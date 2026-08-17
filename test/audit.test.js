@@ -65,6 +65,20 @@ test("leading prohibitions cover coordinated action lists", async () => {
   assert.equal(hasSeverityAtLeast(audit, "high"), false);
 });
 
+test("prohibition lead-ins govern only their immediately following Markdown lists", async () => {
+  const markdown = await readFile("fixtures/skill-prohibited-list.md", "utf8");
+  const audit = auditSkillMarkdown(markdown, { source: "prohibited-list" });
+
+  assert.deepEqual(
+    audit.findings.filter(({ id }) => id === "external-action").map(({ line }) => line),
+    [8, 14]
+  );
+  assert.deepEqual(
+    audit.findings.filter(({ id }) => id === "local-write").map(({ line }) => line),
+    []
+  );
+});
+
 test("affirmative clauses after prohibitions remain reportable", async () => {
   const markdown = await readFile("fixtures/skill-mixed-prohibition.md", "utf8");
   const audit = auditSkillMarkdown(markdown, { source: "mixed-prohibition" });
