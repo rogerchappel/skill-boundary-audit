@@ -38,9 +38,12 @@ export function auditMany(inputs) {
 }
 
 function detectPatternFindings(markdown) {
+  const prohibitedListLines = findProhibitedListLines(markdown);
   return FINDING_PATTERNS.flatMap((pattern) =>
     findLines(markdown, pattern.regex)
-      .filter((match) => !pattern.suppressWhenProhibited || !isExplicitProhibition(match.line, pattern.regex))
+      .filter((match) => !pattern.suppressWhenProhibited || (
+        !prohibitedListLines.has(match.number) && !isExplicitProhibition(match.line, pattern.regex)
+      ))
       .map((match) => ({
       id: pattern.id,
       severity: pattern.severity,
@@ -49,6 +52,33 @@ function detectPatternFindings(markdown) {
       excerpt: match.line.trim()
     }))
   );
+}
+
+function findProhibitedListLines(markdown) {
+  const prohibited = new Set();
+  let awaitingList = false;
+  let inProhibitedList = false;
+
+  for (const { line, number, inFence } of getMarkdownLines(markdown)) {
+    if (inFence) {
+      awaitingList = false;
+      inProhibitedList = false;
+      continue;
+    }
+
+    const isListItem = /^ {0,3}(?:[-+*]|\d+[.)])\s+/.test(line);
+    if (isListItem && (awaitingList || inProhibitedList)) {
+      prohibited.add(number);
+      awaitingList = false;
+      inProhibitedList = true;
+      continue;
+    }
+
+    awaitingList = PROHIBITION.test(line) && /:\s*$/.test(line);
+    inProhibitedList = false;
+  }
+
+  return prohibited;
 }
 
 function detectMissingSectionFindings(missingSections) {
