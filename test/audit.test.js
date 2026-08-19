@@ -45,6 +45,20 @@ test("fenced examples do not provide sections, tools, or action findings", async
   assert.deepEqual(audit.headings, [{ depth: 1, title: "Fenced Example", line: 1 }]);
 });
 
+test("indented code does not provide sections, tools, or findings and normal prose resumes", async () => {
+  const markdown = await readFile("fixtures/skill-indented-code.md", "utf8");
+  const audit = auditSkillMarkdown(markdown, { source: "indented" });
+
+  assert.deepEqual(audit.headings, [
+    { depth: 1, title: "Indented examples", line: 1 },
+    { depth: 2, title: "Safety", line: 8 }
+  ]);
+  assert.deepEqual(audit.tools, ["node"]);
+  assert.equal(audit.findings.some(({ id }) => id === "external-action"), false);
+  assert.equal(audit.sections.present.includes("safety"), true);
+  assert.equal(audit.sections.present.includes("tools"), false);
+});
+
 test("CommonMark fence openers reject backticks in backtick info strings", () => {
   const invalid = ["```bad`info", "Publish the release."].join("\n");
   const validBacktick = ["```` valid-info", "Publish an example.", "`````"].join("\n");
