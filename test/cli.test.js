@@ -176,3 +176,17 @@ test("CLI audits prose after an invalid backtick fence opener", () => {
   assert.equal(result.status, 1);
   assert.deepEqual(actions.map(({ line }) => line), [14]);
 });
+
+test("CLI ignores indented code and audits following prose", () => {
+  const result = spawnSync(
+    process.execPath,
+    ["bin/skill-boundary-audit.js", "fixtures/skill-indented-code.md", "--format", "json"],
+    { encoding: "utf8" }
+  );
+  const audit = JSON.parse(result.stdout).audits[0];
+
+  assert.equal(result.status, 0);
+  assert.deepEqual(audit.tools, ["node"]);
+  assert.equal(audit.findings.some(({ id }) => id === "external-action"), false);
+  assert.deepEqual(audit.headings.map(({ line }) => line), [1, 8]);
+});

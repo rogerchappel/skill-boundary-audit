@@ -1,6 +1,6 @@
 export function getHeadings(markdown) {
   return getMarkdownLines(markdown)
-    .filter(({ inFence }) => !inFence)
+    .filter(({ inCode }) => !inCode)
     .map(({ line, number }) => {
       const match = /^ {0,3}(#{1,6})\s+(.+?)\s*$/.exec(line);
       if (!match) return null;
@@ -15,7 +15,7 @@ export function getHeadings(markdown) {
 
 export function findLines(markdown, regex) {
   return getMarkdownLines(markdown)
-    .filter(({ inFence }) => !inFence)
+    .filter(({ inCode }) => !inCode)
     .filter(({ line }) => regex.test(line));
 }
 
@@ -40,7 +40,8 @@ export function getMarkdownLines(markdown) {
     return {
       line,
       number: index + 1,
-      inFence: wasInFence || marker !== undefined
+      inFence: wasInFence || marker !== undefined,
+      inCode: wasInFence || marker !== undefined || /^(?: {4}|\t)/.test(line)
     };
   });
 }

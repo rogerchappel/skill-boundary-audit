@@ -59,8 +59,8 @@ function findProhibitedListLines(markdown) {
   let awaitingList = false;
   let inProhibitedList = false;
 
-  for (const { line, number, inFence } of getMarkdownLines(markdown)) {
-    if (inFence) {
+  for (const { line, number, inCode } of getMarkdownLines(markdown)) {
+    if (inCode) {
       awaitingList = false;
       inProhibitedList = false;
       continue;
@@ -93,8 +93,8 @@ function detectMissingSectionFindings(missingSections) {
 
 function detectTools(markdown) {
   const candidates = new Set();
-  for (const { line, inFence } of getMarkdownLines(markdown)) {
-    if (inFence) continue;
+  for (const { line, inCode } of getMarkdownLines(markdown)) {
+    if (inCode) continue;
     for (const match of line.matchAll(TOOL_PATTERN)) {
       const word = match[1];
       if (KNOWN_TOOL_WORDS.has(word)) candidates.add(word);
