@@ -2,6 +2,7 @@ import { readFile } from "node:fs/promises";
 import test from "node:test";
 import assert from "node:assert/strict";
 import { auditMany, auditSkillMarkdown, formatJson, formatMarkdown, hasSeverityAtLeast } from "../src/index.js";
+import { getMarkdownLines } from "../src/markdown.js";
 
 test("safe skill reports expected sections and no high findings", async () => {
   const markdown = await readFile("fixtures/skill-safe.md", "utf8");
@@ -42,6 +43,21 @@ test("fenced examples do not provide sections, tools, or action findings", async
   assert.deepEqual(audit.tools, []);
   assert.equal(audit.findings.some(({ id }) => id === "external-action"), false);
   assert.deepEqual(audit.headings, [{ depth: 1, title: "Fenced Example", line: 1 }]);
+});
+
+test("CommonMark fence openers reject backticks in backtick info strings", () => {
+  const invalid = ["```bad`info", "Publish the release."].join("\n");
+  const validBacktick = ["```` valid-info", "Publish an example.", "`````"].join("\n");
+  const validTilde = ["~~~ valid `tilde` info", "Publish another example.", "~~~~"].join("\n");
+  const audit = auditSkillMarkdown(invalid);
+
+  assert.deepEqual(getMarkdownLines(invalid).map(({ inFence }) => inFence), [false, false]);
+  assert.deepEqual(getMarkdownLines(validBacktick).map(({ inFence }) => inFence), [true, true, true]);
+  assert.deepEqual(getMarkdownLines(validTilde).map(({ inFence }) => inFence), [true, true, true]);
+  assert.deepEqual(
+    audit.findings.filter(({ id }) => id === "external-action").map(({ line }) => line),
+    [2]
+  );
 });
 
 test("explicit safety prohibitions suppress actions but retain credential evidence", async () => {

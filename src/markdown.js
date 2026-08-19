@@ -23,7 +23,7 @@ export function getMarkdownLines(markdown) {
   let fence = null;
 
   return markdown.split(/\r?\n/).map((line, index) => {
-    const marker = /^ {0,3}(`{3,}|~{3,})/.exec(line)?.[1];
+    const marker = getFenceMarker(line);
     const wasInFence = fence !== null;
 
     if (!fence && marker) {
@@ -43,6 +43,14 @@ export function getMarkdownLines(markdown) {
       inFence: wasInFence || marker !== undefined
     };
   });
+}
+
+function getFenceMarker(line) {
+  const match = /^ {0,3}(`{3,}|~{3,})(.*)$/.exec(line);
+  if (!match) return undefined;
+
+  const [marker, info] = match.slice(1);
+  return marker[0] === "`" && info.includes("`") ? undefined : marker;
 }
 
 export function hasSection(headings, aliases) {

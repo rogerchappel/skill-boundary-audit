@@ -163,3 +163,16 @@ test("CLI fail-on high catches inflected external actions", () => {
   assert.equal(result.status, 1);
   assert.ok(JSON.parse(result.stdout).audits[0].findings.some(({ id }) => id === "external-action"));
 });
+
+test("CLI audits prose after an invalid backtick fence opener", () => {
+  const result = spawnSync(
+    process.execPath,
+    ["bin/skill-boundary-audit.js", "fixtures/skill-invalid-backtick-fence.md", "--format", "json", "--fail-on", "high"],
+    { encoding: "utf8" }
+  );
+  const actions = JSON.parse(result.stdout).audits[0].findings
+    .filter(({ id }) => id === "external-action");
+
+  assert.equal(result.status, 1);
+  assert.deepEqual(actions.map(({ line }) => line), [14]);
+});

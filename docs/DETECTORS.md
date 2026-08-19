@@ -19,7 +19,10 @@
 
 High severity means a human should inspect the skill before use. Medium severity usually means the skill needs clearer boundaries or documentation.
 
-Fenced code examples are excluded from section, tool, and finding detection. A leading
+Fenced code examples are excluded from section, tool, and finding detection. CommonMark
+backtick fences are opened only when their info string contains no backtick; tilde fence
+info strings may contain backticks. Valid fences may close with a longer run of the same
+marker. A leading
 prohibition is treated as applying across a coordinated action list separated by commas,
 `and`, or `or`, such as “Never send, post, or publish content.” Lead-ins
 as `Do not:` and `Never perform these actions:` suppress action findings in the immediately
