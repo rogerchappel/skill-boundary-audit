@@ -13,7 +13,7 @@ export const FINDING_PATTERNS = [
     severity: "high",
     label: "External action language",
     suppressWhenProhibited: true,
-    regex: /\b(?:send(?:s|ing)?|sent|post(?:s|ed|ing)?|publish(?:es|ed|ing)?|delet(?:e|es|ed|ing)|merg(?:e|es|ed|ing)|deploy(?:s|ed|ing)?|approv(?:e|es|ed|ing)|purchas(?:e|es|ed|ing)|email(?:s|ed|ing)?|messag(?:e|es|ed|ing)|(?:write|writes|wrote|written|writing) to|updat(?:e|es|ed|ing))\b/i
+    regex: /\b(?:send(?:s|ing)?|sent|post(?:s|ed|ing)?|publish(?:es|ed|ing)?|delet(?:e|es|ed|ing)|merg(?:e|es|ed|ing)|deploy(?:s|ed|ing)?|approv(?:e|es|ed|ing)|purchas(?:e|es|ed|ing)|email(?:s|ed|ing)?|messag(?:e|es|ed|ing)|(?:write|writes|wrote|written|writing) to|updat(?:e|es|ed|ing)|(?:creat(?:e|es|ed|ing)|open(?:s|ed|ing)?)\s+(?:(?:an?|the|new)\s+)*(?:(?:github|gitlab)\s+)?(?:issues?|pull requests?|prs?|releases?|repositories|repos?)|push(?:es|ed|ing)?\s+(?:(?:commits?|branches?|changes?)\s+)?(?:to|onto)\s+(?:github|gitlab|origin|the remote|a remote))\b/i
   },
   {
     id: "network-access",
