@@ -202,6 +202,27 @@ test("action detectors recognize common inflections without matching unrelated w
   assert.equal(unrelated.findings.some(({ id }) => id === "external-action" || id === "local-write"), false);
 });
 
+test("remote create, open, and push mutations are high external actions", async () => {
+  const markdown = await readFile("fixtures/skill-remote-mutations.md", "utf8");
+  const audit = auditSkillMarkdown(markdown, { source: "remote-mutations" });
+
+  assert.deepEqual(
+    audit.findings.filter(({ id }) => id === "external-action").map(({ line }) => line),
+    [3, 4, 5]
+  );
+  assert.equal(audit.summary.high, 3);
+  assert.equal(hasSeverityAtLeast(audit, "high"), true);
+});
+
+test("remote mutation detection suppresses prohibitions and code without local false positives", async () => {
+  const markdown = await readFile("fixtures/skill-remote-mutations-safe.md", "utf8");
+  const audit = auditSkillMarkdown(markdown, { source: "remote-mutations-safe" });
+
+  assert.equal(audit.findings.some(({ id }) => id === "external-action"), false);
+  assert.equal(audit.summary.high, 0);
+  assert.equal(hasSeverityAtLeast(audit, "high"), false);
+});
+
 test("inflected actions remain suppressed in prohibitions and fenced examples", () => {
   const audit = auditSkillMarkdown([
     "Never sends emails, posts updates, publishes reports, deletes records, or merges branches.",
