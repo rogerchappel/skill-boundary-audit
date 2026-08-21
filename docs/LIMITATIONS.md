@@ -1,6 +1,8 @@
 # Limitations
 
 - Keyword findings can produce false positives.
+- Remote create/open detection is limited to named issue, pull-request, release, and
+  repository objects; push detection requires an explicit remote destination.
 - Prohibitions suppress action and mutation findings only; credential, network, and
   approval keywords remain visible for review even when they describe prohibited use.
 - List-scoped prohibitions require an explicit colon-terminated lead-in immediately before

@@ -3,7 +3,8 @@
 ## High Severity
 
 - external action language: send, post, publish, delete, merge, deploy, approve, purchase,
-  email, message, write to, and update
+  email, message, write to, update, create/open remote issues or pull requests, and push
+  commits, branches, or changes to GitHub, GitLab, origin, or another explicit remote
 - credential language: secret, token, API key, credential, password, OAuth (singular or plural)
 - missing safety section
 
