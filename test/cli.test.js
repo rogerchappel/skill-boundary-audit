@@ -182,6 +182,28 @@ test("CLI fail-on high rejects remote writes and accepts their safe counterparts
   assert.equal(JSON.parse(safe.stdout).audits[0].summary.high, 0);
 });
 
+test("CLI fail-on high rejects expanded remote actions and accepts explicit boundaries", () => {
+  const risky = spawnSync(
+    process.execPath,
+    ["bin/skill-boundary-audit.js", "fixtures/skill-expanded-remote-actions.md", "--format", "json", "--fail-on", "high"],
+    { encoding: "utf8" }
+  );
+  const safe = spawnSync(
+    process.execPath,
+    ["bin/skill-boundary-audit.js", "fixtures/skill-expanded-remote-actions-safe.md", "--format", "json", "--fail-on", "high"],
+    { encoding: "utf8" }
+  );
+
+  assert.equal(risky.status, 1);
+  assert.deepEqual(
+    JSON.parse(risky.stdout).audits[0].findings
+      .filter(({ id }) => id === "external-action")
+      .map(({ line }) => line),
+    [3, 4, 5, 6, 7]
+  );
+  assert.equal(safe.status, 0);
+});
+
 test("CLI audits prose after an invalid backtick fence opener", () => {
   const result = spawnSync(
     process.execPath,
