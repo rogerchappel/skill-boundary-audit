@@ -223,6 +223,37 @@ test("remote mutation detection suppresses prohibitions and code without local f
   assert.equal(hasSeverityAtLeast(audit, "high"), false);
 });
 
+test("expanded remote mutations retain affirmative line evidence", async () => {
+  const markdown = await readFile("fixtures/skill-expanded-remote-actions.md", "utf8");
+  const audit = auditSkillMarkdown(markdown, { source: "expanded-remote-actions" });
+  const actions = audit.findings.filter(({ id }) => id === "external-action");
+
+  assert.deepEqual(actions.map(({ line }) => line), [3, 4, 5, 6, 7]);
+  assert.deepEqual(actions.map(({ excerpt }) => excerpt), [
+    "Upload the report to S3.",
+    "Grant access to the workspace.",
+    "Invite the user to Slack.",
+    "Archive the repository on GitHub.",
+    "Close the GitHub issue."
+  ]);
+});
+
+test("expanded mutations support inflections and preserve suppression boundaries", async () => {
+  const affirmative = auditSkillMarkdown(
+    "Uploads reports, granted access, inviting users, archived repositories, and closes issues."
+  );
+  const unrelated = auditSkillMarkdown(
+    "The uploader reviewed grantmaking, invitations, archival policy, and closure documentation."
+  );
+  const safe = auditSkillMarkdown(
+    await readFile("fixtures/skill-expanded-remote-actions-safe.md", "utf8")
+  );
+
+  assert.equal(affirmative.findings.filter(({ id }) => id === "external-action").length, 1);
+  assert.equal(unrelated.findings.some(({ id }) => id === "external-action"), false);
+  assert.equal(safe.findings.some(({ id }) => id === "external-action"), false);
+});
+
 test("inflected actions remain suppressed in prohibitions and fenced examples", () => {
   const audit = auditSkillMarkdown([
     "Never sends emails, posts updates, publishes reports, deletes records, or merges branches.",
