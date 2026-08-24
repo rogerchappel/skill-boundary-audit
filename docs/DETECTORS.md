@@ -22,6 +22,8 @@ High severity means a human should inspect the skill before use. Medium severity
 
 Fenced and four-space- or tab-indented code examples are excluded from section, tool,
 and finding detection. Normal prose after an indented code block remains visible. CommonMark
+ATX headings and `=` or `-` Setext headings are recognized as sections; their source line
+is the line containing the heading title. Setext-looking text inside code remains excluded.
 backtick fences are opened only when their info string contains no backtick; tilde fence
 info strings may contain backticks. Valid fences may close with a longer run of the same
 marker. A leading

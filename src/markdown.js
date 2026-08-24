@@ -1,16 +1,39 @@
 export function getHeadings(markdown) {
-  return getMarkdownLines(markdown)
-    .filter(({ inCode }) => !inCode)
-    .map(({ line, number }) => {
-      const match = /^ {0,3}(#{1,6})\s+(.+?)\s*$/.exec(line);
-      if (!match) return null;
-      return {
-        depth: match[1].length,
-        title: match[2].replace(/\s+#*$/, ""),
-        line: number
-      };
-    })
-    .filter(Boolean);
+  const lines = getMarkdownLines(markdown);
+  const headings = [];
+
+  for (let index = 0; index < lines.length; index += 1) {
+    const current = lines[index];
+    if (current.inCode) continue;
+
+    const atx = /^ {0,3}(#{1,6})\s+(.+?)\s*$/.exec(current.line);
+    if (atx) {
+      headings.push({
+        depth: atx[1].length,
+        title: atx[2].replace(/\s+#*$/, ""),
+        line: current.number
+      });
+      continue;
+    }
+
+    const setext = /^ {0,3}(=+|-+)\s*$/.exec(current.line);
+    const title = lines[index - 1];
+    if (
+      setext &&
+      title &&
+      !title.inCode &&
+      /^ {0,3}\S/.test(title.line) &&
+      !/^ {0,3}#{1,6}(?:\s|$)/.test(title.line)
+    ) {
+      headings.push({
+        depth: setext[1][0] === "=" ? 1 : 2,
+        title: title.line.trim(),
+        line: title.number
+      });
+    }
+  }
+
+  return headings;
 }
 
 export function findLines(markdown, regex) {
