@@ -87,7 +87,7 @@ function detectMissingSectionFindings(missingSections) {
     severity: section === "safety" ? "high" : "medium",
     title: `Missing ${section} section`,
     line: null,
-    excerpt: `Add a ${section} section to make operational boundaries explicit.`
+    excerpt: `Add an explicit ${section} section to define operational boundaries.`
   }));
 }
 

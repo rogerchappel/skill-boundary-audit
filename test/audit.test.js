@@ -168,6 +168,41 @@ test("ATX headings allow up to three leading spaces but not four", () => {
   assert.equal(audit.findings.some(({ id }) => id === "local-write"), false);
 });
 
+test("CommonMark Setext headings provide sections and preserve title line numbers", async () => {
+  const markdown = await readFile("fixtures/skill-setext-sections.md", "utf8");
+  const audit = auditSkillMarkdown(markdown, { source: "setext" });
+
+  assert.deepEqual(audit.headings, [
+    { depth: 1, title: "Safety", line: 1 },
+    { depth: 2, title: "Validation", line: 4 },
+    { depth: 2, title: "Examples", line: 12 },
+    { depth: 3, title: "Inputs", line: 19 },
+    { depth: 2, title: "Tools", line: 22 },
+    { depth: 2, title: "Approvals", line: 26 }
+  ]);
+  assert.deepEqual(audit.sections.present, [
+    "safety", "validation", "examples", "inputs", "tools", "approvals"
+  ]);
+  assert.deepEqual(audit.sections.missing, []);
+  assert.equal(audit.findings.some(({ id }) => id.startsWith("missing-")), false);
+});
+
+test("missing-section guidance is grammatical for every section", () => {
+  const audit = auditSkillMarkdown("# Overview\nNo operational sections yet.");
+  const guidance = Object.fromEntries(
+    audit.findings
+      .filter(({ id }) => id.startsWith("missing-"))
+      .map(({ id, excerpt }) => [id, excerpt])
+  );
+
+  for (const section of ["safety", "validation", "examples", "inputs", "tools", "approvals"]) {
+    assert.equal(
+      guidance[`missing-${section}`],
+      `Add an explicit ${section} section to define operational boundaries.`
+    );
+  }
+});
+
 test("affirmative risky wording still produces high findings and line evidence", async () => {
   const markdown = await readFile("fixtures/skill-affirmative-risk.md", "utf8");
   const audit = auditSkillMarkdown(markdown, { source: "affirmative" });
