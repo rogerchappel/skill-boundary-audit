@@ -81,6 +81,20 @@ test("CLI suppresses prohibited list items but reports actions after list scope"
   assert.deepEqual(actions, [8, 14]);
 });
 
+test("CLI follows prohibited list item continuations without swallowing later prose", () => {
+  const result = spawnSync(
+    process.execPath,
+    ["bin/skill-boundary-audit.js", "fixtures/skill-prohibited-list-continuation.md", "--format", "json", "--fail-on", "high"],
+    { encoding: "utf8" }
+  );
+  const actions = JSON.parse(result.stdout).audits[0].findings
+    .filter(({ id }) => id === "external-action")
+    .map(({ line }) => line);
+
+  assert.equal(result.status, 1);
+  assert.deepEqual(actions, [8]);
+});
+
 test("CLI preserves earlier affirmative evidence before a prohibition", () => {
   const result = spawnSync(
     process.execPath,
