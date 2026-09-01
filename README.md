@@ -42,7 +42,8 @@ in addition to publishing, messaging, deployment, and repository mutations.
 Action detection treats a leading prohibition as applying across a coordinated verb list
 separated by commas, `and`, or `or` (for example, “Never send, post, or publish”).
 An explicit prohibition lead-in ending in a colon also governs its immediately following
-Markdown list. That scope ends before later prose or a separate list.
+Markdown list, including indented continuation lines within an item. That scope ends before
+later prose or a separate list.
 Explicit `no <action>` boundaries such as “No writes” are also recognized. A prohibition
 must precede the action it suppresses, so earlier affirmative actions remain reportable.
 Contrast and sequence boundaries such as `but`, `however`, `instead`, `then`, or sentence
