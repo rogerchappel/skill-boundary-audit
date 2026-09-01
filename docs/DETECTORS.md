@@ -30,7 +30,8 @@ marker. A leading
 prohibition is treated as applying across a coordinated action list separated by commas,
 `and`, or `or`, such as “Never send, post, or publish content.” Lead-ins
 as `Do not:` and `Never perform these actions:` suppress action findings in the immediately
-following ordered or unordered Markdown list. Later prose and separate lists start a new scope.
+following ordered or unordered Markdown list, including indented continuation lines belonging
+to an item. Later prose and separate lists start a new scope.
 Explicit boundaries such as “No writes” are also recognized. A prohibition suppresses only actions that follow it;
 affirmative actions earlier in the same clause remain findings. Contrast and sequence
 words (`but`, `however`, `instead`, and `then`) and sentence punctuation start a new

@@ -109,6 +109,17 @@ test("prohibition lead-ins govern only their immediately following Markdown list
   );
 });
 
+test("prohibited list scope follows indented item continuation content", async () => {
+  const markdown = await readFile("fixtures/skill-prohibited-list-continuation.md", "utf8");
+  const audit = auditSkillMarkdown(markdown, { source: "prohibited-list-continuation" });
+
+  assert.deepEqual(
+    audit.findings.filter(({ id }) => id === "external-action").map(({ line }) => line),
+    [8]
+  );
+  assert.equal(audit.findings.some(({ line }) => line === 6), false);
+});
+
 test("affirmative clauses after prohibitions remain reportable", async () => {
   const markdown = await readFile("fixtures/skill-mixed-prohibition.md", "utf8");
   const audit = auditSkillMarkdown(markdown, { source: "mixed-prohibition" });

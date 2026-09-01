@@ -58,6 +58,7 @@ function findProhibitedListLines(markdown) {
   const prohibited = new Set();
   let awaitingList = false;
   let inProhibitedList = false;
+  let itemContentIndent = 0;
 
   for (const { line, number, inCode } of getMarkdownLines(markdown)) {
     if (inCode) {
@@ -66,16 +67,24 @@ function findProhibitedListLines(markdown) {
       continue;
     }
 
-    const isListItem = /^ {0,3}(?:[-+*]|\d+[.)])\s+/.test(line);
-    if (isListItem && (awaitingList || inProhibitedList)) {
+    const listItem = /^( {0,3})(?:[-+*]|\d+[.)])(\s+)/.exec(line);
+    if (listItem && (awaitingList || inProhibitedList)) {
       prohibited.add(number);
       awaitingList = false;
       inProhibitedList = true;
+      itemContentIndent = listItem[0].length;
+      continue;
+    }
+
+    const indentation = /^ */.exec(line)[0].length;
+    if (inProhibitedList && line.trim() && indentation >= itemContentIndent) {
+      prohibited.add(number);
       continue;
     }
 
     awaitingList = PROHIBITION.test(line) && /:\s*$/.test(line);
     inProhibitedList = false;
+    itemContentIndent = 0;
   }
 
   return prohibited;
