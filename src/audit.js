@@ -4,6 +4,7 @@ import { findLines, getHeadings, getMarkdownLines, hasSection } from "./markdown
 const SEVERITY_SCORE = { low: 1, medium: 2, high: 3 };
 const PROHIBITION = /\b(?:never|do not|don't|must not|must never|should not|cannot|can't|may not)\b/i;
 const CLAUSE_BOUNDARY = /(?:[.;:!?]+|\b(?:but|however|instead|then)\b)/i;
+const INTERVENING_VERB = /\b(?:need|needs|needed|needing|hesitate|hesitates|hesitated|hesitating)\b/i;
 
 export function auditSkillMarkdown(markdown, options = {}) {
   const source = options.source ?? "inline";
@@ -120,8 +121,11 @@ function isExplicitProhibition(line, findingPattern) {
 
     const prohibition = PROHIBITION.exec(clause);
     const hasLeadingProhibition = prohibition && prohibition.index < action.index;
+    const prohibitionGovernsAction = hasLeadingProhibition && !INTERVENING_VERB.test(
+      clause.slice(prohibition.index + prohibition[0].length, action.index)
+    );
     const hasLeadingNo = /\bno\s*$/i.test(clause.slice(0, action.index));
-    return !hasLeadingProhibition && !hasLeadingNo;
+    return !prohibitionGovernsAction && !hasLeadingNo;
   });
 }
 
