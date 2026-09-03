@@ -156,6 +156,21 @@ test("prohibitions only suppress actions that follow them", () => {
   );
 });
 
+test("unrelated negated verbs do not suppress later actions", () => {
+  const audit = auditSkillMarkdown([
+    "You do not need approval to publish the release.",
+    "Do not hesitate to push changes to origin.",
+    "Do not publish the release.",
+    "Never send, post, or publish customer data.",
+    "Do not hesitate to publish, but do not deploy."
+  ].join("\n"));
+
+  assert.deepEqual(
+    audit.findings.filter(({ id }) => id === "external-action").map(({ line }) => line),
+    [1, 2, 5]
+  );
+});
+
 test("no-action boundaries suppress their coordinated actions", () => {
   const audit = auditSkillMarkdown("No writes, edits, or pushes are allowed.");
 
