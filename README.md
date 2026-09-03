@@ -45,7 +45,8 @@ An explicit prohibition lead-in ending in a colon also governs its immediately f
 Markdown list, including indented continuation lines within an item. That scope ends before
 later prose or a separate list.
 Explicit `no <action>` boundaries such as “No writes” are also recognized. A prohibition
-must precede the action it suppresses, so earlier affirmative actions remain reportable.
+must directly govern the action it suppresses, so earlier affirmative actions and actions
+after an unrelated negated verb (such as “do not need approval to publish”) remain reportable.
 Contrast and sequence boundaries such as `but`, `however`, `instead`, `then`, or sentence
 punctuation start a new clause, so affirmative actions after those boundaries are still reported.
 
