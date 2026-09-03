@@ -5,6 +5,8 @@
   repository objects; push detection requires an explicit remote destination.
 - Prohibitions suppress action and mutation findings only; credential, network, and
   approval keywords remain visible for review even when they describe prohibited use.
+- Prohibition scope recognizes common intervening verbs such as `need` and `hesitate`;
+  uncommon or structurally complex negation may still require human interpretation.
 - List-scoped prohibitions require an explicit colon-terminated lead-in immediately before
   the ordered or unordered list; indented item continuations remain in scope, while later
   prose and separate lists terminate it.
