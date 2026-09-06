@@ -92,7 +92,7 @@ test("CLI follows prohibited list item continuations without swallowing later pr
     .map(({ line }) => line);
 
   assert.equal(result.status, 1);
-  assert.deepEqual(actions, [8]);
+  assert.deepEqual(actions, [9, 11]);
 });
 
 test("CLI preserves earlier affirmative evidence before a prohibition", () => {
