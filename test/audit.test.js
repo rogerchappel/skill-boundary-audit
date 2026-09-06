@@ -115,9 +115,9 @@ test("prohibited list scope follows indented item continuation content", async (
 
   assert.deepEqual(
     audit.findings.filter(({ id }) => id === "external-action").map(({ line }) => line),
-    [8]
+    [9, 11]
   );
-  assert.equal(audit.findings.some(({ line }) => line === 6), false);
+  assert.equal(audit.findings.some(({ line }) => line === 7), false);
 });
 
 test("affirmative clauses after prohibitions remain reportable", async () => {

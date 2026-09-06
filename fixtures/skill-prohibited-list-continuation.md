@@ -1,11 +1,14 @@
 # Prohibited List Continuation
 
 ## Safety
-Never:
-- publish the release and
-  send an email.
+Do not:
+- publish the release
+
+  and send an email.
 
 Publish the audit summary.
+
+- Deploy the release separately.
 
 ## Validation
 Run the audit tests.
