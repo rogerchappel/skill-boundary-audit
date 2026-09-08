@@ -95,6 +95,25 @@ test("CLI follows prohibited list item continuations without swallowing later pr
   assert.deepEqual(actions, [9, 11]);
 });
 
+test("CLI accepts blank-separated prohibited lists and stops at later content", () => {
+  const result = spawnSync(
+    process.execPath,
+    ["bin/skill-boundary-audit.js", "fixtures/skill-prohibited-list-commonmark.md", "--format", "json", "--fail-on", "high"],
+    { encoding: "utf8" }
+  );
+  const audit = JSON.parse(result.stdout).audits[0];
+
+  assert.equal(result.status, 1);
+  assert.deepEqual(
+    audit.findings.filter(({ id }) => id === "external-action").map(({ line }) => line),
+    [12, 14, 22]
+  );
+  assert.deepEqual(
+    audit.findings.filter(({ id }) => id === "local-write").map(({ line }) => line),
+    []
+  );
+});
+
 test("CLI preserves earlier affirmative evidence before a prohibition", () => {
   const result = spawnSync(
     process.execPath,
