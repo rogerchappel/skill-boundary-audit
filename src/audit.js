@@ -59,43 +59,42 @@ function findProhibitedListLines(markdown) {
   const prohibited = new Set();
   let awaitingList = false;
   let inProhibitedList = false;
+  let listKind = null;
   let itemContentIndent = 0;
-  let afterBlankLine = false;
 
   for (const { line, number, inCode } of getMarkdownLines(markdown)) {
     if (inCode) {
       awaitingList = false;
       inProhibitedList = false;
-      afterBlankLine = false;
+      listKind = null;
       continue;
     }
 
-    const listItem = /^( {0,3})(?:[-+*]|\d+[.)])(\s+)/.exec(line);
-    if (listItem && (awaitingList || (inProhibitedList && !afterBlankLine))) {
+    if (!line.trim() && (awaitingList || inProhibitedList)) {
+      continue;
+    }
+
+    const listItem = /^( {0,3})([-+*]|\d+[.)])(\s+)/.exec(line);
+    const currentListKind = listItem && (/\d/.test(listItem[2]) ? "ordered" : "unordered");
+    if (listItem && (awaitingList || (inProhibitedList && currentListKind === listKind))) {
       prohibited.add(number);
       awaitingList = false;
       inProhibitedList = true;
+      listKind = currentListKind;
       itemContentIndent = listItem[0].length;
-      afterBlankLine = false;
       continue;
     }
 
     const indentation = /^ */.exec(line)[0].length;
     if (inProhibitedList && line.trim() && indentation >= itemContentIndent) {
       prohibited.add(number);
-      afterBlankLine = false;
-      continue;
-    }
-
-    if (inProhibitedList && !line.trim()) {
-      afterBlankLine = true;
       continue;
     }
 
     awaitingList = PROHIBITION.test(line) && /:\s*$/.test(line);
     inProhibitedList = false;
+    listKind = null;
     itemContentIndent = 0;
-    afterBlankLine = false;
   }
 
   return prohibited;
