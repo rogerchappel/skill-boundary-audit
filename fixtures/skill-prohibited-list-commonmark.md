@@ -19,7 +19,7 @@ Do not:
 
 2. upload artifacts
 
-Publish the audit summary.
+- Publish the audit summary from a separate list.
 
 ## Validation
 Run the audit tests.

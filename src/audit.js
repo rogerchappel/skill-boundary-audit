@@ -59,14 +59,14 @@ function findProhibitedListLines(markdown) {
   const prohibited = new Set();
   let awaitingList = false;
   let inProhibitedList = false;
-  let listKind = null;
+  let listStyle = null;
   let itemContentIndent = 0;
 
   for (const { line, number, inCode } of getMarkdownLines(markdown)) {
     if (inCode) {
       awaitingList = false;
       inProhibitedList = false;
-      listKind = null;
+      listStyle = null;
       continue;
     }
 
@@ -75,12 +75,14 @@ function findProhibitedListLines(markdown) {
     }
 
     const listItem = /^( {0,3})([-+*]|\d+[.)])(\s+)/.exec(line);
-    const currentListKind = listItem && (/\d/.test(listItem[2]) ? "ordered" : "unordered");
-    if (listItem && (awaitingList || (inProhibitedList && currentListKind === listKind))) {
+    const currentListStyle = listItem && (/\d/.test(listItem[2])
+      ? `ordered:${listItem[2].at(-1)}`
+      : `unordered:${listItem[2]}`);
+    if (listItem && (awaitingList || (inProhibitedList && currentListStyle === listStyle))) {
       prohibited.add(number);
       awaitingList = false;
       inProhibitedList = true;
-      listKind = currentListKind;
+      listStyle = currentListStyle;
       itemContentIndent = listItem[0].length;
       continue;
     }
@@ -93,7 +95,7 @@ function findProhibitedListLines(markdown) {
 
     awaitingList = PROHIBITION.test(line) && /:\s*$/.test(line);
     inProhibitedList = false;
-    listKind = null;
+    listStyle = null;
     itemContentIndent = 0;
   }
 

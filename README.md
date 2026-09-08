@@ -44,7 +44,7 @@ separated by commas, `and`, or `or` (for example, “Never send, post, or publis
 An explicit prohibition lead-in ending in a colon also governs its immediately following
 Markdown list. CommonMark-style blank lines may separate the lead-in from the first item,
 separate loose items, or precede an indented item continuation. That scope ends before
-unindented prose or a list of the other marker kind (ordered versus unordered).
+unindented prose or a change in bullet character or ordered-list delimiter.
 Explicit `no <action>` boundaries such as “No writes” are also recognized. A prohibition
 must directly govern the action it suppresses, so earlier affirmative actions and actions
 after an unrelated negated verb (such as “do not need approval to publish”) remain reportable.

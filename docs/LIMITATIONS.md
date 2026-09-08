@@ -10,7 +10,7 @@
 - List-scoped prohibitions require an explicit colon-terminated lead-in before the ordered
   or unordered list. CommonMark-style blank lines before the list and between loose items
   or indented continuations remain in scope; unindented prose and a change between ordered
-  and unordered markers terminate it.
+  and changes in bullet character or ordered-list delimiter terminate it.
 - Missing section checks do not prove a section is complete.
 - ATX and `=` or `-` Setext section headings follow Markdown's zero-to-three-space
   indentation rule; four-space indented heading-like text is treated as code rather than
