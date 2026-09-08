@@ -120,6 +120,20 @@ test("prohibited list scope follows indented item continuation content", async (
   assert.equal(audit.findings.some(({ line }) => line === 7), false);
 });
 
+test("prohibited list scope follows tight and loose CommonMark list structure", async () => {
+  const markdown = await readFile("fixtures/skill-prohibited-list-commonmark.md", "utf8");
+  const audit = auditSkillMarkdown(markdown, { source: "prohibited-list-commonmark" });
+
+  assert.deepEqual(
+    audit.findings.filter(({ id }) => id === "external-action").map(({ line }) => line),
+    [12, 14, 22]
+  );
+  assert.deepEqual(
+    audit.findings.filter(({ id }) => id === "local-write").map(({ line }) => line),
+    []
+  );
+});
+
 test("affirmative clauses after prohibitions remain reportable", async () => {
   const markdown = await readFile("fixtures/skill-mixed-prohibition.md", "utf8");
   const audit = auditSkillMarkdown(markdown, { source: "mixed-prohibition" });

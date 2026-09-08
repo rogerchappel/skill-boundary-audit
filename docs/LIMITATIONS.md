@@ -7,9 +7,10 @@
   approval keywords remain visible for review even when they describe prohibited use.
 - Prohibition scope recognizes common intervening verbs such as `need` and `hesitate`;
   uncommon or structurally complex negation may still require human interpretation.
-- List-scoped prohibitions require an explicit colon-terminated lead-in immediately before
-  the ordered or unordered list; indented item continuations remain in scope, while later
-  prose and separate lists terminate it.
+- List-scoped prohibitions require an explicit colon-terminated lead-in before the ordered
+  or unordered list. CommonMark-style blank lines before the list and between loose items
+  or indented continuations remain in scope; unindented prose and a change between ordered
+  and changes in bullet character or ordered-list delimiter terminate it.
 - Missing section checks do not prove a section is complete.
 - ATX and `=` or `-` Setext section headings follow Markdown's zero-to-three-space
   indentation rule; four-space indented heading-like text is treated as code rather than
