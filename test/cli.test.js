@@ -144,6 +144,21 @@ test("CLI reports actions after unrelated negated verbs", () => {
   );
 });
 
+test("CLI accepts negative contractions while retaining affirmative clause evidence", () => {
+  const result = spawnSync(
+    process.execPath,
+    ["bin/skill-boundary-audit.js", "fixtures/skill-contracted-prohibition.md", "--format", "json", "--fail-on", "high"],
+    { encoding: "utf8" }
+  );
+  const audit = JSON.parse(result.stdout).audits[0];
+
+  assert.equal(result.status, 1);
+  assert.deepEqual(
+    audit.findings.filter(({ id }) => id === "external-action").map(({ line }) => line),
+    [7, 8]
+  );
+});
+
 test("CLI rejects unknown options before file access", () => {
   const result = spawnSync(
     process.execPath,

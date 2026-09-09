@@ -185,6 +185,20 @@ test("unrelated negated verbs do not suppress later actions", () => {
   );
 });
 
+test("negative contractions suppress only their governed action clauses", () => {
+  const audit = auditSkillMarkdown([
+    "This skill doesn't publish, post, or send anything.",
+    "The agent WON'T upload reports or delete records.",
+    "It doesn't publish reports; it sends the approved summary.",
+    "It doesn't need approval to publish the release."
+  ].join("\n"));
+
+  assert.deepEqual(
+    audit.findings.filter(({ id }) => id === "external-action").map(({ line }) => line),
+    [3, 4]
+  );
+});
+
 test("no-action boundaries suppress their coordinated actions", () => {
   const audit = auditSkillMarkdown("No writes, edits, or pushes are allowed.");
 
