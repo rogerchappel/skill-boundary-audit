@@ -24,6 +24,12 @@ Fenced and four-space- or tab-indented code examples are excluded from section, 
 and finding detection. Normal prose after an indented code block remains visible. CommonMark
 ATX headings and `=` or `-` Setext headings are recognized as sections; their source line
 is the line containing the heading title. Setext-looking text inside code remains excluded.
+
+Explicit action prohibitions suppress the governed action finding, including common negative
+forms such as `do not`, `don't`, `doesn't`, `cannot`, `can't`, and `won't`. Coordinated actions
+remain governed until a clause boundary; affirmative actions after that boundary still produce
+findings. Negation of an intervening verb, such as “doesn't need approval to publish,” does not
+suppress the later action.
 backtick fences are opened only when their info string contains no backtick; tilde fence
 info strings may contain backticks. Valid fences may close with a longer run of the same
 marker. A leading
