@@ -2,7 +2,7 @@ import { FINDING_PATTERNS, KNOWN_TOOL_WORDS, SECTION_ALIASES, TOOL_PATTERN } fro
 import { findLines, getHeadings, getMarkdownLines, hasSection } from "./markdown.js";
 
 const SEVERITY_SCORE = { low: 1, medium: 2, high: 3 };
-const PROHIBITION = /\b(?:never|do not|don't|must not|must never|should not|cannot|can't|may not)\b/i;
+const PROHIBITION = /\b(?:never|(?:do|does|did|will|would|should|could|may|must) not|must never|cannot|(?:don|doesn|didn|won|wouldn|shouldn|couldn|mustn)'t|can't)\b/i;
 const CLAUSE_BOUNDARY = /(?:[.;:!?]+|\b(?:but|however|instead|then)\b)/i;
 const INTERVENING_VERB = /\b(?:need|needs|needed|needing|hesitate|hesitates|hesitated|hesitating)\b/i;
 
