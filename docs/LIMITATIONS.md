@@ -19,5 +19,7 @@
   detection. Detection resumes on the next non-indented line.
 - Tool detection is intentionally narrow and only recognizes common tool names.
 - The audit is static and does not evaluate dynamic instructions.
+- Prohibition detection recognizes a bounded set of explicit English forms and clause
+  boundaries; unusual negation or complex sentence structure can still require human review.
 
 Use this project as a review assistant, not as an authority on whether a skill is safe to run.
